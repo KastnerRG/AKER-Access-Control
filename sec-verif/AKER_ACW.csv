@@ -1,0 +1,136 @@
+SP ID,Related CWEs,SP Requirement,SP Specification Template,SP Type,Total SPs After Expanding,Verification Level
+01,"1258, 1266, 1270, 1271, 1272, 1280",C cannot receive data from P which originates while the ACW is actively being reset.,"//# of Generic Signals to Replace = 2
+SP01_RECEIVE_GENERIC: assert iflow(
+ `signal_from_P`
+ when (ARESETN == 0)
+ =/=>
+ `signal_to_C`
+);",IFT,38,IP
+02,"1258, 1266, 1270, 1271, 1272, 1280",C cannot send data to P which originates while the ACW is actively being reset.,"//# of Generic Signals to Replace = 2
+SP02_SEND_GENERIC: assert iflow(
+ `signal_from_C`
+ when (ARESETN == 0)
+ =/=>
+ `signal_to_P`
+);",IFT,38,IP
+03,"1221, 1258, 1266, 1269, 1271, 1280",C receives the default AXI signals while the ACW is actively being reset.,"//# of Generic Signals to Replace = 2
+SP03_DEFAULT_GENERIC: assert iflow(
+ `signal_to_C` == `default_AXI_value`
+ unless (ARESETN != 0)
+);",Trace,11,IP
+04,"1221, 1258, 1266, 1269, 1271, 1280",The ACW outputs the default AXI signals to P while the ACW is actively being reset.,"//# of Generic Signals to Replace = 2
+SP04_DEFAULT_GENERIC: assert iflow(
+ `signal_to_P` == `default_AXI_value`
+ unless (ARESETN != 0)
+);",Trace,27,IP
+05,"1221, 1258, 1259, 1266, 1267, 1269, 1271, 1274, 1280, 1282",The configuration/anomaly registers are cleared and set to contain the default values while the ACW is actively being reset.,"//# of Generic Signals to Replace = 2
+SP05_DEFAULT_GENERIC: assert iflow(
+ `reg` == `default_value`
+ unless (ARESETN != 0 && `acw_w/r_state` != 2'b00)
+);",Trace,38,IP
+06,"1269, 1272, 1280",The TE can read from but not write to anomaly registers.,"//# of Generic Signals to Replace = 3
+SP06_RONLY_GENERIC: assert iflow(
+ `signal_from_TE`
+ when (S_AXI_CTRL_AWADDR == `reg_addr`) 
+ =/=>
+ `anomaly_reg`
+);",IFT,4,Firmware
+07,"1258, 1270, 1272, 1280",C cannot receive data from P which originates while the ACW is in reset mode.,"//# of Generic Signals to Replace = 3
+SP07_RECEIVE_GENERIC: assert iflow(
+ `signal_from_P`
+ when (`acw_w/r_state` == 2'b00)
+ =/=>
+ `signal_to_C`
+);",IFT,38,IP
+08,"1258, 1270, 1272, 1280",C cannot send data to P which originates while the ACW is in reset mode.,"//# of Generic Signals to Replace = 3
+SP08_SEND_GENERIC: assert iflow(
+ `signal_from_C`
+ when (`acw_w/r_state` == 2'b00)
+ =/=>
+ `signal_to_P`
+);",IFT,38,IP
+09,"1221, 1258, 1269, 1272, 1280",C receives the default AXI signals while the ACW is in reset mode.,"//# of Generic Signals to Replace = 3
+SP09_DEFAULT_GENERIC: assert iflow(
+ `signal_to_C` == `default_AXI_value`
+ unless (`acw_w/r_state` != 2'b00)
+);",Trace,11,IP
+10,"1221, 1258, 1269, 1272, 1280",The ACW outputs the default AXI signals to P while the ACW is in reset mode.,"//# of Generic Signals to Replace = 3
+SP10_DEFAULT_GENERIC: assert iflow(
+ `signal_to_P` == `default_AXI_value`
+ unless (`acw_w/r_state` != 2'b00)
+);",Trace,27,IP
+11,"1221, 1258, 1259, 1267, 1269, 1271, 1272, 1274, 1280, 1282",The configuration/anomaly registers contain the default values until they are modified by the TE (config.) and/or ACW (illegal req. metadata tracking).,"//# of Generic Signals to Replace = 3
+SP11_DEFAULT_GENERIC: assert iflow(
+ `unauthorized_signal`
+ when (`reg` == `default_value`) 
+ =/=>
+ `reg`
+ unless (`reg` == `default_value`)
+);",IFT,"8,768 (all 231 unauthorized sigs)
+2,876 (76 non-acw sigs)
+1,432 (38 sigs from C)",Firmware
+12,"1270, 1272, 1280",C cannot receive data associated with an illegal address from P which originates while the ACW is in supervising mode.,"//# of Generic Signals to Replace = 4
+SP12_RECEIVE_GENERIC: assert iflow(
+ `signal_from_P`
+ when (`acw_w/r_state` == 2'b01) &&
+ (`AR/AW_ADDR_VALID_FLAG` == 0)
+ =/=>
+ `signal_to_C`
+);",IFT,38,IP
+13,"1270, 1272, 1280",C cannot send data associated with an illegal address to P which originates while the ACW is in supervising mode.,"//# of Generic Signals to Replace = 4
+SP13_SEND_GENERIC: assert iflow(
+ `signal_from_C`
+ when (`acw_w/r_state` == 2'b01) &&
+ (`AR/AW_ADDR_VALID_FLAG` == 0)
+ =/=>
+ `signal_to_P`
+);",IFT,38,IP
+14,"1270, 1272, 1280",C cannot receive data from P which originates while the ACW is in decouple mode.,"//# of Generic Signals to Replace = 3
+SP14_RECEIVE_GENERIC: assert iflow(
+ `signal_from_P`
+ when (`acw_w/r_state` == 2'b10)
+ =/=>
+ `signal_to_C`
+);",IFT,38,IP
+15,"1270, 1272, 1280",C cannot send data to P which originates while the ACW is in decouple mode.,"//# of Generic Signals to Replace = 3
+SP15_SEND_GENERIC: assert iflow(
+ `signal_from_C`
+ when (`acw_w/r_state` == 2'b10)
+ =/=>
+ `signal_to_P`
+);",IFT,38,IP
+16,"1221, 1269, 1272, 1280",C receives the default AXI signals while the ACW is in decouple mode.,"//# of Generic Signals to Replace = 3
+SP16_DEFAULT_GENERIC: assert iflow(
+ `signal_to_C` == `default_AXI_value`
+ unless (`acw_w/r_state` != 2'b10)
+);",Trace,11,IP
+17,"1221, 1269, 1272, 1280",The ACW outputs the default AXI signals to the P while the ACW is in decouple mode.,"//# of Generic Signals to Replace = 3
+SP17_DEFAULT_GENERIC: assert iflow(
+ `signal_to_P` == `default_AXI_value`
+ unless (`acw_w/r_state` != 2'b10)
+);",Trace,27,IP
+18,"1272, 1280, 1283",The anomaly registers are updated with illegal request metadata after the ACW detects an illegal request.,"//# of Generic Signals to Replace = 3
+SP18_DEFAULT_GENERIC: assert iflow(
+ `authorized_signal`
+ when (`acw_w/r_state` == 2'b01)
+ =/=>
+ `anomaly_reg`
+ unless (`acw_w/r_state` == 2'b10)
+);",IFT,12,IP
+19,"1221, 1272, 1280",An interrupt to TE is generated after the ACW detects an illegal request.,"//# of Generic Signals to Replace = 2
+SP19_INTERRUPT_GENERIC: assert iflow(
+ `INTR_LINE_W/R` == 1
+ unless (`acw_w/r_state` != 2'b10)
+);",Trace,2,Firmware
+20,"441, 1189, 1260",Any C cannot receive data from any region not contained within its ACW's LACP.,"//# of Generic Signals to Replace = 2
+SP20_RECEIVE_GENERIC: assert iflow(
+`unauthorized`
+ =/=>
+`sig_to_C`
+);",IFT,76,System
+21,"441, 1189, 1260",Any C cannot send data to any region not contained within its ACW's LACP.,"//# of Generic Signals to Replace = 2
+SP21_SEND_GENERIC: assert iflow(
+`sig_from_C`
+ =/=>
+`unauthorized`
+);",IFT,76,System

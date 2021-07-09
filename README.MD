@@ -5,9 +5,9 @@ Modern systems on a chip (SoCs) utilize heterogeneous architectures where multip
 ## Repo Structure
 ```
 AKER-Access-Control
-|-- docs: Documentation for various aspects of this project (e.g., slides, papers, sec-verif reference sheet) 
-|-- rtl: RTL files for various acw designs and other ip cores used for testing/validation at the ip, firmware, and system level  
-|-- sec_verif: Various scripts and config files used to generate and verify security properties over the RTL designs
+|-- docs: Documentation for various aspects of the project (slides, papers, sec-verif reference) 
+|-- rtl: RTL files for various acw designs and other ip cores used for testing/validation  
+|-- sec_verif: Various scripts and config files used to generate/verify security properties over the RTL designs
     |-- aker_sv
     |-- AKER_ACW.csv
     |-- DEMO_1_AKER_SV.ipynb
